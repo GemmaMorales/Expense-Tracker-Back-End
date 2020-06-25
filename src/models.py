@@ -52,7 +52,7 @@ class Client(db.Model):
 
 class Transaction(db.Model):
     transaction_id = db.Column(db.Integer, primary_key=True)
-    client = db.Column(db.Integer, ForeignKey("client.client_id"))
+    client = db.Column(db.Integer, ForeignKey("Client.client_id"))
     date = db.Column(db.Date)
     amount = db.Column(db.Float)
     transaction_type = db.Column(db.Enum("expense","revenue"))
