@@ -15,3 +15,33 @@ db = SQLAlchemy()
 #             "username": self.username,
 #             "email": self.email
 #         }
+
+class User(Base):
+    __tablename__ = "user"
+    user_id = Column(Integer, primary_key=True)
+    password = Column(String)
+    name = Column(String)
+    email_address= Column(String)
+
+class Client(Base):
+    __tablename__ = "client"
+    client_id = Column(Integer, primary_key=True)
+    company_name = Column(String)
+    bookkeeper = Column(Integer, ForeignKey("user.user_id"))
+    email_address = Column(String)
+
+class Transaction(Base):
+    __tablename__ = "transaction"
+    transaction_id = Column(Integer, primary_key=True)
+    client = Column(Integer, ForeignKey("client.client_id"))
+    date = Column(Date)
+    amount = Column(Float)
+    transaction_type = Column(Enum("expense","revenue"))
+    name = Column(String)
+    GL_account = Column(Integer)
+
+class Unknown(Base):
+    __tablename__ = "unknown"
+    unknown_id = Column(Integer, primary_key=True)
+    transaction = Column(Integer, ForeignKey(transaction.transaction_id))
+    missing_entity = Column(Enum("vendor_name","customer_name","GL_acct"))
