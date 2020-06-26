@@ -12,6 +12,7 @@ from models import db
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
+app.secret_key = os.environ.get('FLASK_APP_KEY', 'sample key')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_CONNECTION_STRING')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 MIGRATE = Migrate(app, db)
