@@ -19,11 +19,11 @@ db = SQLAlchemy()
 class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     qb_id = db.Column(db.Integer, unique=True)
-    password = db.Column(db.String)
-    name = db.Column(db.String)
-    email = db.Column(db.String, unique=True)
+    password = db.Column(db.String(60))
+    name = db.Column(db.String(200))
+    email = db.Column(db.String(200), unique=True)
 
-    clients = db.relationship ("Clients")
+    client = db.relationship ("Client")
     special_codes = db.relationship ("Special_Codes")
 
     def serialize(self):
@@ -36,11 +36,11 @@ class User(db.Model):
 
 class Client(db.Model):
     client_id = db.Column(db.Integer, primary_key=True)
-    company_name = db.Column(db.String)
-    user_id = db.Column(db.Integer, ForeignKey("User.user_id"))
-    email = db.Column(db.String, unique=True)
+    company_name = db.Column(db.String(200))
+    user_id = db.Column(db.Integer, db.ForeignKey(User.user_id))
+    email = db.Column(db.String(200), unique=True)
 
-    transactions = db.relationship ("Transactions")
+    transaction = db.relationship ("Transaction")
 
     def serialize(self):
         return {
@@ -52,12 +52,12 @@ class Client(db.Model):
 
 class Transaction(db.Model):
     transaction_id = db.Column(db.Integer, primary_key=True)
-    client = db.Column(db.Integer, ForeignKey("Client.client_id"))
+    client = db.Column(db.Integer, db.ForeignKey(Client.client_id))
     date = db.Column(db.Date)
     amount = db.Column(db.Float)
     transaction_type = db.Column(db.Enum("expense","revenue"))
-    vendor_qb_id = db.Column(db.String)
-    customer_qb_id = db.Column(db.String)
+    vendor_qb_id = db.Column(db.String(200))
+    customer_qb_id = db.Column(db.String(200))
     GL_acct = db.Column(db.Integer)
 
     def serialize(self):
@@ -73,9 +73,10 @@ class Transaction(db.Model):
         }
 
 class Special_Codes(db.Model):
+    sc_id = db.Column(db.Integer, primary_key=True)
     code_type = db.Column(db.Enum("vendor_name","customer_name","GL_acct"))
-    user_id = db.Column(db.Integer, ForeignKey(User.user_id))
-    code = db.Column(db.String)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.user_id))
+    code = db.Column(db.String(200))
     
 
     def serialize(self):
