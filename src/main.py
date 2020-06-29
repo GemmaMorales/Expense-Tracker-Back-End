@@ -31,11 +31,52 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-@app.route('/hello', methods=['POST', 'GET'])
-def handle_hello():
+@app.route('/loginInfo', methods=['POST'])
+def get_login_info():
 
     response_body = {
-        "hello": "world"
+        ""
+    }
+    return jsonify(response_body), 200
+
+@app.route('/selectClient', methods=['GET'])
+def select_client():
+
+    response_body = {
+        ""
+    }
+    return jsonify(response_body), 200
+
+@app.route('/selectUnknown', methods=['GET'])
+def select_unknown():
+
+    response_body = {
+        ""
+    }
+    return jsonify(response_body), 200
+
+@app.route('/requestInfo', methods=['POST'])
+def request_info():
+
+    response_body = {
+        "
+    }
+
+    return jsonify(response_body), 200
+
+@app.route('/clientResponses', methods=['POST'])
+def get_client_responses():
+
+    response_body = {
+        ""
+    }
+    return jsonify(response_body), 200
+
+@app.route('/intigrateResponses', methods=['POST'])
+def intigrate_responses():
+
+    response_body = {
+        ""
     }
 
     return jsonify(response_body), 200
