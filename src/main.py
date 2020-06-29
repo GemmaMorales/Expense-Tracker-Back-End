@@ -72,8 +72,8 @@ def get_client_responses():
     }
     return jsonify(response_body), 200
 
-@app.route('/intigrateResponses', methods=['POST'])
-def intigrate_responses():
+@app.route('/integrateResponses', methods=['POST'])
+def integrate_responses():
 
     response_body = {
         ""
