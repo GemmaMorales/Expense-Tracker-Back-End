@@ -9,6 +9,7 @@ from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
 from models import db
+from models import User, Client, Transaction, Special_Codes
 #from models import Person
 
 app = Flask(__name__)
@@ -31,55 +32,73 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-@app.route('/loginInfo', methods=['POST'])
-def get_login_info():
+# CREATE NEW USER ACCOUNT
+@app.route('/user', methods=['POST'])
+def add_user():
+    name = request.json['name']
+    email = request.json['email'] 
+    password = request.json['password']
+    qb_id = request.json['qb_id']
 
-    response_body = {
-        ""
-    }
+    new_user = User(name, email, password, qb_id)
+
+    db.session.add(new_user)
+    db.session.commit()
+
+   
+    return jsonify(new_user), 200
+
+# LOG IN TO USER ACCOUNT
+@app.route('/user', methods=['GET'])
+def login():
+    error = None
+    if request.method == 'POST':
+        if valid_login(request.form['user_id'],
+                       request.form['password']):
+            return log_the_user_in(request.form['user_id'])
+        else:
+            error = 'Invalid userid/password'
     return jsonify(response_body), 200
 
-@app.route('/selectClient', methods=['GET'])
-def select_client():
+# SELECT CLIENT
+@app.route('/client/<client_id>', methods=['GET'])
+def select_client(client_id):
+    client = Client.query.get(client_id)
 
-    response_body = {
-        ""
-    }
-    return jsonify(response_body), 200
+    redirect(url_for(#client's quickbooks acct)) 
+    return jsonify(client), 200
 
-@app.route('/selectUnknown', methods=['GET'])
-def select_unknown():
 
-    response_body = {
-        ""
-    }
-    return jsonify(response_body), 200
-
-@app.route('/requestInfo', methods=['POST'])
+# REQUEST INFORMATION FROM CLIENT
+@app.route('/transaction', methods=['GET'])
 def request_info():
+    all_transactions = Transactions.query.all()
+    unknowns = []
+    for transaction in all_transactions:
+        if vendor_qb_id = Special_Codes.code or customer_qb_id = Special_Codes.code or GL_acct = Special_Codes.code
+            unknowns.append(transaction)
+    
+    return jsonify(unknowns), 200
 
-    response_body = {
-        "
-    }
+# CLIENT UPDATES UNKNOWN FIELDS
+@app.route('/transaction<transaction_id>', methods=['PUT'])
+def update_transaction():
+    transaction = Transaction.query.get(transaction_id)
 
-    return jsonify(response_body), 200
+    vendor_qb_id = request.json['vendor_qb_id']
+    customer_qb_id = request.json['customer_qb_id']
+    GL_acct = request.json['GL_acct']
 
-@app.route('/clientResponses', methods=['POST'])
-def get_client_responses():
+    transaction.vendor_qb_id = vendor_qb_id
+    transaction.customer_qb_id = customer_qb_id
+    transaction.GL_acct = GL_acct
 
-    response_body = {
-        ""
-    }
-    return jsonify(response_body), 200
+    db.session.commit()
 
-@app.route('/integrateResponses', methods=['POST'])
-def integrate_responses():
+    #send user_id email that client has responded
+    return jsonify(transaction), 200
 
-    response_body = {
-        ""
-    }
 
-    return jsonify(response_body), 200
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':

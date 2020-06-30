@@ -17,15 +17,18 @@ db = SQLAlchemy()
 #         }
 
 class User(db.Model):
-    user_id = db.Column(db.Integer, primary_key=True)
-    qb_id = db.Column(db.Integer, unique=True)
-    password = db.Column(db.String(60))
+    user_id = db.Column(db.Integer, primary_key=True, unique=True)
     name = db.Column(db.String(200))
     email = db.Column(db.String(200), unique=True)
-
+    password = db.Column(db.String(60))
+    qb_id = db.Column(db.Integer, unique=True)
+    
+    
     client = db.relationship ("Client")
     special_codes = db.relationship ("Special_Codes")
 
+    #def set_password(self, password)
+    
     def serialize(self):
         return {
             "username": self.user_id,
@@ -35,7 +38,7 @@ class User(db.Model):
         }
 
 class Client(db.Model):
-    client_id = db.Column(db.Integer, primary_key=True)
+    client_id = db.Column(db.Integer, primary_key=True, unique=True)
     company_name = db.Column(db.String(200))
     user_id = db.Column(db.Integer, db.ForeignKey(User.user_id))
     email = db.Column(db.String(200), unique=True)
@@ -51,7 +54,7 @@ class Client(db.Model):
         }
 
 class Transaction(db.Model):
-    transaction_id = db.Column(db.Integer, primary_key=True)
+    transaction_id = db.Column(db.Integer, primary_key=True, unique=True)
     client = db.Column(db.Integer, db.ForeignKey(Client.client_id))
     date = db.Column(db.Date)
     amount = db.Column(db.Float)
@@ -73,7 +76,7 @@ class Transaction(db.Model):
         }
 
 class Special_Codes(db.Model):
-    sc_id = db.Column(db.Integer, primary_key=True)
+    sc_id = db.Column(db.Integer, primary_key=True, unique=True)
     code_type = db.Column(db.Enum("vendor_name","customer_name","GL_acct"))
     user_id = db.Column(db.Integer, db.ForeignKey(User.user_id))
     code = db.Column(db.String(200))
