@@ -45,19 +45,19 @@ def add_user():
     db.session.add(new_user)
     db.session.commit()
 
-   
     return jsonify(new_user), 200
 
 # LOG IN TO USER ACCOUNT
 @app.route('/user', methods=['GET'])
 def login():
     error = None
-    if request.method == 'POST':
-        if valid_login(request.form['user_id'],
-                       request.form['password']):
-            return log_the_user_in(request.form['user_id'])
-        else:
-            error = 'Invalid userid/password'
+    if valid_login(request.form['user_id'],
+                request.form['password']):
+        return log_the_user_in(request.form['user_id'])
+        #redirect to user's account
+    else:
+        error = 'Invalid userid/password'
+    
     return jsonify(response_body), 200
 
 # SELECT CLIENT
