@@ -68,7 +68,8 @@ def new_user():
 def verify_password(username, password):
     user = User.query.filter_by(username = username).first()
     if not user or not user.verify_password(password):
-        return False # error = 'Invalid user id/password'
+        # print('Invalid username/email/password')
+        return False 
     g.user = user
     return True
  
@@ -95,11 +96,7 @@ def select_client(client_id):
 # REQUEST INFORMATION FROM CLIENT
 @app.route('/client/<client_id>', methods=['GET'])
 def request_info():
-    all_transactions = Transactions.query.all()
-    unknowns = []
-    for transaction in all_transactions:
-        if vendor_qb_id = Special_Codes.code or customer_qb_id = Special_Codes.code or GL_acct = Special_Codes.code
-            unknowns.append(transaction)
+    unknowns = Transaction.query.filter_by(vendor_qb_id='Special_Codes.code' or customer_qb_id='Special_Codes.code' or GL_acct = 'Special_Codes.code').all()
     
     response_body = {
         'unspecified_transactions': 'unknowns'
@@ -135,3 +132,10 @@ def update_transaction():
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
     app.run(host='0.0.0.0', port=PORT, debug=False)
+
+
+    # all_transactions = Transactions.query.all()
+    # unknowns = []
+    # for transaction in all_transactions:
+    #     if vendor_qb_id = Special_Codes.code or customer_qb_id = Special_Codes.code or GL_acct = Special_Codes.code
+    #         unknowns.append(transaction)
