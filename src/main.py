@@ -80,22 +80,24 @@ def verify_password(username, password):
     return jsonify(response_body), 200
 
 # SELECT CLIENT
-@app.route('/client/', methods=['GET'])
-def select_client(client_id):
-    client = Client.query.get(client_id)
-
-    redirect(url_for('/client/<client_id>')) 
+@app.route('/home', methods=['GET'])
+def select_client():
+    client = request.json['client_id']
+    transactions = client.Transaction.query.all()
+    
+    redirect(url_for('/client/<client_id>/transactions')) 
     
     response_body = {
-
+        'client_transactions': 'transactions'
     }
-    #redirect to '/client/client_id>
+    #redirect to '/client/client_id/transactions>
     return jsonify(response_body), 200
 
 
 # REQUEST INFORMATION FROM CLIENT
-@app.route('/client/<client_id>', methods=['GET'])
+@app.route('/client/<client_id>/transactions', methods=['GET'])
 def request_info():
+    
     unknowns = Transaction.query.filter_by(vendor_qb_id='Special_Codes.code' or customer_qb_id='Special_Codes.code' or GL_acct = 'Special_Codes.code').all()
     
     response_body = {
