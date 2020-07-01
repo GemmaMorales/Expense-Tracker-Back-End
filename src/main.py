@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
-from flask import Flask, request, jsonify, url_for
+from flask import Flask, request, jsonify, url_for, redirect, render_template
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from flask_cors import CORS
@@ -10,7 +10,12 @@ from utils import APIException, generate_sitemap
 from admin import setup_admin
 from models import db
 from models import User, Client, Transaction, Special_Codes
-#from models import Person
+#f rom models import Person
+# TO HASH PASSWORD
+# from passlib.apps import custom_app_context as pwd_context
+# TO AUTHENTICATE USER LOGIN INFO
+#from flask_httpauth import HTTPBasicAuth
+#auth = HTTPBasicAuth()
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
@@ -33,44 +38,62 @@ def sitemap():
     return generate_sitemap(app)
 
 # CREATE NEW USER ACCOUNT
-@app.route('/user', methods=['POST'])
-def add_user():
+@app.route('/user/create', methods=['POST'])
+def new_user():
     name = request.json['name']
     email = request.json['email'] 
     password = request.json['password']
     qb_id = request.json['qb_id']
-
+    if name is None or email is None or password is None or qb_id is None:
+        abort(400) # missing arguments
+    if User.query.filter_by(username = username).first() is not None:
+        abort(400) # existing user
     new_user = User(name, email, password, qb_id)
-
+    #user.hash_password(password)
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify(new_user), 200
+    response_body = {
+        'msg': 'New user account has been activated.'
+    }
+
+    # redirect to user's account/login page?
+    return jsonify(response_body), 200
 
 # LOG IN TO USER ACCOUNT
-@app.route('/user', methods=['GET'])
-def login():
-    error = None
-    if valid_login(request.form['user_id'],
-                request.form['password']):
-        return log_the_user_in(request.form['user_id'])
-        #redirect to user's account
-    else:
-        error = 'Invalid userid/password'
-    
+@app.route('/user/login', methods=['GET'])
+# def login():
+    # body = request.get_json()
+@auth.verify_password
+def verify_password(username, password):
+    user = User.query.filter_by(username = username).first()
+    if not user or not user.verify_password(password):
+        return False # error = 'Invalid user id/password'
+    g.user = user
+    return True
+ 
+    response_body = {
+
+    }
+    # redirects to user's account home page/select client page
     return jsonify(response_body), 200
 
 # SELECT CLIENT
-@app.route('/client/<client_id>', methods=['GET'])
+@app.route('/client/', methods=['GET'])
 def select_client(client_id):
     client = Client.query.get(client_id)
 
-    redirect(url_for(#client's quickbooks acct)) 
-    return jsonify(client), 200
+    redirect(url_for('/client/<client_id>')) 
+    
+    response_body = {
+
+    }
+    #redirect to '/client/client_id>
+    return jsonify(response_body), 200
 
 
 # REQUEST INFORMATION FROM CLIENT
-@app.route('/transaction', methods=['GET'])
+@app.route('/client/<client_id>', methods=['GET'])
 def request_info():
     all_transactions = Transactions.query.all()
     unknowns = []
@@ -78,10 +101,14 @@ def request_info():
         if vendor_qb_id = Special_Codes.code or customer_qb_id = Special_Codes.code or GL_acct = Special_Codes.code
             unknowns.append(transaction)
     
-    return jsonify(unknowns), 200
+    response_body = {
+        'unspecified_transactions': 'unknowns'
+    }
+    # send email to client?
+    return jsonify(response_body), 200
 
 # CLIENT UPDATES UNKNOWN FIELDS
-@app.route('/transaction<transaction_id>', methods=['PUT'])
+@app.route('/transaction/<transaction_id>', methods=['PUT'])
 def update_transaction():
     transaction = Transaction.query.get(transaction_id)
 
@@ -95,8 +122,12 @@ def update_transaction():
 
     db.session.commit()
 
+    request_body = {
+        'msg': 'Transaction information has been successfully updated.'
+    }
+
     #send user_id email that client has responded
-    return jsonify(transaction), 200
+    return jsonify(request_body), 200
 
 
 

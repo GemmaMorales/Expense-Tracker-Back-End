@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+# from passlib.apps import custom_app_context as pwd_context
 
 db = SQLAlchemy()
 
@@ -20,7 +21,7 @@ class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True, unique=True)
     name = db.Column(db.String(200))
     email = db.Column(db.String(200), unique=True)
-    password = db.Column(db.String(60))
+    password#_hash = db.Column(db.String(60))
     qb_id = db.Column(db.Integer, unique=True)
     
     
@@ -29,9 +30,15 @@ class User(db.Model):
 
     #def set_password(self, password)
     
+    # def hash_password(self, password):
+    #     self.password_hash = pwd_context.encrypt(password)
+
+    # def verify_password(self, password):
+    #     return pwd_context.verify(password, self.password_hash)
+
     def serialize(self):
         return {
-            "username": self.user_id,
+            "user_id": self.user_id,
             "password": self.password,
             "name": self.name,
             "email": self.email
