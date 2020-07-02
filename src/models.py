@@ -21,7 +21,7 @@ class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True, unique=True)
     name = db.Column(db.String(200))
     email = db.Column(db.String(200), unique=True)
-    password#_hash = db.Column(db.String(60))
+    password = db.Column(db.String(60))
     qb_id = db.Column(db.Integer, unique=True)
     
     
