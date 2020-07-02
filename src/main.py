@@ -13,12 +13,7 @@ from models import User, Client, Transaction, Special_Codes
 from flask_jwt_simple import (
     JWTManager, jwt_required, create_jwt, get_jwt_identity
 )
-#f rom models import Person
-# TO HASH PASSWORD
-# from passlib.apps import custom_app_context as pwd_context
-# TO AUTHENTICATE USER LOGIN INFO
-#from flask_httpauth import HTTPBasicAuth
-#auth = HTTPBasicAuth()
+from quickbooks import add_endpoints
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
@@ -31,6 +26,8 @@ CORS(app)
 setup_admin(app)
 app.config['JWT_SECRET_KEY'] = 'super-secret'  # Change this!
 jwt = JWTManager(app)
+app = add_endpoints(app) 
+
 
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)

@@ -17,25 +17,21 @@ db = SQLAlchemy()
 #             "email": self.email
 #         }
 
+
+
 class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True, unique=True)
     name = db.Column(db.String(200))
     email = db.Column(db.String(200), unique=True)
     password = db.Column(db.String(60))
-    qb_id = db.Column(db.Integer, unique=True)
+    qb_code = db.Column(db.String(255), unique=True)
+    qb_realmID = db.Column(db.String(255)) 
     
     
     client = db.relationship ("Client")
     special_codes = db.relationship ("Special_Codes")
 
-    #def set_password(self, password)
-    
-    # def hash_password(self, password):
-    #     self.password_hash = pwd_context.encrypt(password)
-
-    # def verify_password(self, password):
-    #     return pwd_context.verify(password, self.password_hash)
-
+  
     def serialize(self):
         return {
             "user_id": self.user_id,
