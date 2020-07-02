@@ -1,7 +1,7 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-import os
+import os, datetime
 from flask import Flask, request, jsonify, url_for, redirect, render_template
 from flask_migrate import Migrate
 from flask_swagger import swagger
@@ -79,53 +79,56 @@ def login():
     return jsonify(ret), 200
 
 # SELECT CLIENT
-# @app.route('/home', methods=['GET'])
-# def select_client():
-#     client = request.json['client_id']
-#     transactions = client.Transaction.query.all()
-    
-#     redirect(url_for('/client/<client_id>/transactions')) 
-    
-#     response_body = {
-#         'client_transactions': 'transactions'
-#     }
-#     #redirect to '/client/client_id/transactions>
-#     return jsonify(response_body), 200
+@app.route('/client/<int:client_id>/transactions', methods=['GET'])
+def select_client(client_id):
+    vendor_qb_id = request.args.get('vendor_qb_id')
+    customer_qb_id = request.args.get('customer_qb_id')
+    GL_acct = request.args.get('GL_acct')
+    transactions = Transaction.query.filter_by(client_id=client_id)   
+    if vendor_qb_id is not None:
+        transactions = transactions.filter_by(vendor_qb_id=vendor_qb_id)
+    if customer_qb_id is not None:
+        transactions = transactions.filter_by(customer_qb_id=customer_qb_id)
+    if GL_acct is not None:
+        transactions = transactions.filter_by(GL_acct=GL_acct)
+    serialized_transactions = list(map(lambda x: x.serialize(), transactions))
+    return jsonify(serialized_transactions), 200
 
 
-# # REQUEST INFORMATION FROM CLIENT
-# @app.route('/client/<client_id>/transactions', methods=['GET'])
-# def request_info():
-    
-#     unknowns = Transaction.query.filter_by(vendor_qb_id='Special_Codes.code' or customer_qb_id='Special_Codes.code' or GL_acct = 'Special_Codes.code').all()
-    
-#     response_body = {
-#         'unspecified_transactions': 'unknowns'
-#     }
-#     # send email to client?
-#     return jsonify(response_body), 200
+@app.route('/transactions', methods=['GET'])
+def post_transaction():
+    tran1 = Transaction(
+        
+            client_id = 1,
+            date = datetime.date.today(),
+            amount = 4.00,
+            transaction_type = 'revenue',
+            vendor_qb_id = 6123,
+            customer_qb_id = 124,
+            GL_acct = 7823
+    )
+    db.session.add(tran1)
+    db.session.commit()
 
-# # CLIENT UPDATES UNKNOWN FIELDS
-# @app.route('/transaction/<transaction_id>', methods=['PUT'])
-# def update_transaction():
-#     transaction = Transaction.query.get(transaction_id)
 
-#     vendor_qb_id = request.json['vendor_qb_id']
-#     customer_qb_id = request.json['customer_qb_id']
-#     GL_acct = request.json['GL_acct']
 
-#     transaction.vendor_qb_id = vendor_qb_id
-#     transaction.customer_qb_id = customer_qb_id
-#     transaction.GL_acct = GL_acct
+# CLIENT UPDATES TRANSACTION
+@app.route('/transaction/<int:transaction_id>', methods=['PUT'])
+def update_transaction(transaction_id):
+    transaction = Transaction.query.get(transaction_id)
+    if transaction is None:
+        raise APIException('Transaction not found.', status_code=404)
+    if "vendor_qb_id" in request.json: 
+        transaction.vendor_qb_id = request.json["vendor_qb_id"]
+    if "customer_qb_id" in request.json: 
+        transaction.vendor_qb_id = request.json["customer_qb_id"]
+    if "GL_acct" in request.json: 
+        transaction.vendor_qb_id = request.json["GL_acct"]
 
-#     db.session.commit()
 
-#     request_body = {
-#         'msg': 'Transaction information has been successfully updated.'
-#     }
+    db.session.commit()
 
-#     #send user_id email that client has responded
-#     return jsonify(request_body), 200
+    return jsonify(transaction.serialize()), 200
 
 
 

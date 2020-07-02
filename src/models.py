@@ -50,7 +50,7 @@ class Client(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey(User.user_id))
     email = db.Column(db.String(200), unique=True)
 
-    transaction = db.relationship ("Transaction")
+    transactions = db.relationship ("Transaction")
 
     def serialize(self):
         return {
@@ -62,7 +62,7 @@ class Client(db.Model):
 
 class Transaction(db.Model):
     transaction_id = db.Column(db.Integer, primary_key=True, unique=True)
-    client = db.Column(db.Integer, db.ForeignKey(Client.client_id))
+    client_id = db.Column(db.Integer, db.ForeignKey(Client.client_id))
     date = db.Column(db.Date)
     amount = db.Column(db.Float)
     transaction_type = db.Column(db.Enum("expense","revenue"))
@@ -71,10 +71,13 @@ class Transaction(db.Model):
     GL_acct = db.Column(db.Integer)
 
     def serialize(self):
+        client = Client.query.get(self.client_id)
+        if client is not None:
+            client = client.serialize()
         return {
+            "client": client,
             "transaction_id": self.transaction_id,
-            "client": self.client,
-            "date": self.namedate,
+            "date": self.date,
             "amount": self.amount,
             "transaction_type": self.transaction_type,
             "vendor_qb_id": self.vendor_qb_id,
