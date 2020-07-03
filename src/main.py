@@ -135,8 +135,3 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=PORT, debug=False)
 
 
-    # all_transactions = Transactions.query.all()
-    # unknowns = []
-    # for transaction in all_transactions:
-    #     if vendor_qb_id = Special_Codes.code or customer_qb_id = Special_Codes.code or GL_acct = Special_Codes.code
-    #         unknowns.append(transaction)
