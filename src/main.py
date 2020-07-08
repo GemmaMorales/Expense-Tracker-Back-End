@@ -57,7 +57,6 @@ def new_user():
     if User.query.filter_by(email =email).first() is not None:
         raise APIException('An account already exists for this email', status_code=400)
     new_user = User(name=name, email=email, password=password)
-    #user.hash_password(password)
     db.session.add(new_user)
     db.session.commit()
 
