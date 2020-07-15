@@ -90,7 +90,7 @@ def select_client(client_id):
     serialized_transactions = list(map(lambda x: x.serialize(), transactions))
     return jsonify(serialized_transactions), 200
 
-
+#TESTING
 @app.route('/transactions', methods=['GET'])
 def post_transaction():
     tran1 = Transaction(
