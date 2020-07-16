@@ -77,8 +77,8 @@ def login():
     return jsonify(ret), 200
 
 # SELECT CLIENT
-@app.route('/clients', methods=['GET'])
-def select_client(client_id):
+@app.route('/client', methods=['GET'])
+def get_clients():
     # vendor_qb_id = request.args.get('vendor_qb_id')
     # customer_qb_id = request.args.get('customer_qb_id')
     # GL_acct = request.args.get('GL_acct')
@@ -94,7 +94,7 @@ def select_client(client_id):
 
 # SELECT CLIENT
 @app.route('/client/<int:client_id>/transactions', methods=['GET'])
-def select_client(client_id):
+def select_client_transactions(client_id):
     vendor_qb_id = request.args.get('vendor_qb_id')
     customer_qb_id = request.args.get('customer_qb_id')
     GL_acct = request.args.get('GL_acct')
