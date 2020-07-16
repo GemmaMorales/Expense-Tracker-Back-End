@@ -65,6 +65,8 @@ def new_user():
 # LOG IN TO USER ACCOUNT
 @app.route('/token', methods=['POST'])
 def login():
+    if request.is_json == False:
+        raise APIException('The request must be in json format', status_code=400)
     body = request.get_json()
     if 'email' not in body:
         raise APIException('Please specify a email', status_code=400)
