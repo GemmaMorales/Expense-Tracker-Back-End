@@ -42,12 +42,14 @@ def sitemap():
 # CREATE NEW USER ACCOUNT
 @app.route('/user', methods=['POST'])
 def new_user():
+    if request.is_json == False:
+        raise APIException('The request must contain a json', status_code=400)
     if 'name' not in request.json:
         raise APIException('You need to specify the name', status_code=400)
     if 'email' not in request.json:
-        raise APIException('You need to specify the name', status_code=400)
+        raise APIException('You need to specify the email', status_code=400)
     if 'password' not in request.json:
-        raise APIException('You need to specify the name', status_code=400)
+        raise APIException('You need to specify the password', status_code=400)
     name = request.json['name']
     email = request.json['email'] 
     password = request.json['password']
