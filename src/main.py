@@ -78,7 +78,7 @@ def login():
     ret = {'jwt': create_jwt(identity=user.user_id), 'user_id': user.user_id}
     return jsonify(ret), 200
 
-# SELECT CLIENT
+# GENERATE CLIENT LIST
 @app.route('/client', methods=['GET'])
 def get_clients():
     # vendor_qb_id = request.args.get('vendor_qb_id')
