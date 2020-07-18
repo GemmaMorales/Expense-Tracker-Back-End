@@ -79,7 +79,7 @@ def login():
     return jsonify(ret), 200
 
 # GENERATE CLIENT LIST
-@app.route('/client', methods=['GET'])
+@app.route('/clients', methods=['GET'])
 def get_clients():
     # vendor_qb_id = request.args.get('vendor_qb_id')
     # customer_qb_id = request.args.get('customer_qb_id')
