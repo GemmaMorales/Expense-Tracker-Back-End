@@ -94,7 +94,7 @@ def get_clients():
     serialized_clients = list(map(lambda x: x.serialize(), clients))
     return jsonify(serialized_clients), 200
 
-# SELECT CLIENT
+# SELECT CLIENT AND GET TRANSACTIONS
 @app.route('/client/<int:client_id>/transactions', methods=['GET'])
 def select_client_transactions(client_id):
     vendor_qb_id = request.args.get('vendor_qb_id')
