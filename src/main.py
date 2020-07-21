@@ -146,7 +146,16 @@ def update_transaction(transaction_id):
 
     return jsonify(transaction.serialize()), 200
 
+#DECODE OBJECT RESPONSE,
+#{
+    # "id_1": "transaction_description",
+    # "id_2": "transaction_description",
+    # "id_6": "transaction_description",
+# }
 
+@app.route('/transactions', methods=['PUT'])
+def decode_response():
+    return None
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':

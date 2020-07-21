@@ -51,6 +51,7 @@ class Transaction(db.Model):
     vendor_qb_id = db.Column(db.String(200))
     customer_qb_id = db.Column(db.String(200))
     GL_acct = db.Column(db.Integer)
+    transaction_description = db.Column(db.String(255))
 
     def serialize(self):
         client = Client.query.get(self.client_id)
