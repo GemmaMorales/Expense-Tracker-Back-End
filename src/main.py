@@ -71,7 +71,7 @@ def login():
         raise APIException('The request must be in json format', status_code=400)
     body = request.get_json()
     if 'email' not in body:
-        raise APIException('Please specify a email', status_code=400)
+        raise APIException('Please specify an email', status_code=400)
     if 'password' not in body:
         raise APIException('Please specify a password', status_code=400)
     user = User.query.filter_by(email = body["email"], password=body['password']).first()
@@ -137,25 +137,29 @@ def update_transaction(transaction_id):
     if "vendor_qb_id" in request.json: 
         transaction.vendor_qb_id = request.json["vendor_qb_id"]
     if "customer_qb_id" in request.json: 
-        transaction.vendor_qb_id = request.json["customer_qb_id"]
+        transaction.customer_qb_id = request.json["customer_qb_id"]
     if "GL_acct" in request.json: 
-        transaction.vendor_qb_id = request.json["GL_acct"]
-
-
+        transaction.GL_acct = request.json["GL_acct"]
     db.session.commit()
 
     return jsonify(transaction.serialize()), 200
 
-#DECODE OBJECT RESPONSE,
-#{
-    # "id_1": "transaction_description",
-    # "id_2": "transaction_description",
-    # "id_6": "transaction_description",
-# }
 
+#DECODE OBJECT RESPONSE
 @app.route('/transactions', methods=['PUT'])
 def decode_response():
-    return None
+    if request.is_json == False:
+        raise APIException('The request must be in json format', status_code=400)
+    body = request.get_json()
+    for key, value in body.items():
+        transaction = Transaction.query.get(key)
+        transaction.transaction_description = value  
+    db.session.commit()
+    return "okay", 200 
+
+      
+    
+    
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
