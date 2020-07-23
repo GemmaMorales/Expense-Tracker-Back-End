@@ -52,6 +52,7 @@ class Transaction(db.Model):
     customer_qb_id = db.Column(db.String(200))
     GL_acct = db.Column(db.Integer)
     transaction_description = db.Column(db.String(255))
+    payee_or_payer = db.Column(db.String(200))
 
     def serialize(self):
         client = Client.query.get(self.client_id)
@@ -65,7 +66,9 @@ class Transaction(db.Model):
             "transaction_type": self.transaction_type,
             "vendor_qb_id": self.vendor_qb_id,
             "customer_qb_id": self.customer_qb_id,
-            "GL_acct": self.GL_acct
+            "GL_acct": self.GL_acct,
+            "transaction_description": self.transaction_description,
+            "payee_or_payer": self.payee_or_payer
         }
 
 class Special_Codes(db.Model):
