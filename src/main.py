@@ -147,7 +147,7 @@ def update_transaction(transaction_id):
     return jsonify(transaction.serialize()), 200
 
 
-#DECODE OBJECT RESPONSE
+#DECODE OBJECT RESPONSE FOR TRNSACTION DESCRIPTION
 @app.route('/transactions', methods=['PUT'])
 def decode_response():
     if request.is_json == False:
@@ -160,7 +160,17 @@ def decode_response():
     return "okay", 200 
 
       
-    
+#DECODE OBJECT RESPONSE FOR VENDOR/CUSTOMER NAME
+@app.route('/transactions', methods=['PUT'])
+def decode_response():
+    if request.is_json == False:
+        raise APIException('The request must be in json format', status_code=400)
+    body = request.get_json()
+    for key, value in body.items():
+        transaction = Transaction.query.get(key)
+        payee_or_payer = value  
+    db.session.commit()
+    return "okay", 200  
     
 
 # this only runs if `$ python src/main.py` is executed
