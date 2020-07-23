@@ -75,6 +75,8 @@ def login():
     if 'password' not in body:
         raise APIException('Please specify a password', status_code=400)
     user = User.query.filter_by(email = body["email"], password=body['password']).first()
+    if user is None:
+        raise APIException('Invalid username or password')
     ret = {'jwt': create_jwt(identity=user.user_id), 'user_id': user.user_id}
     return jsonify(ret), 200
 

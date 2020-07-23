@@ -81,3 +81,4 @@ class Special_Codes(db.Model):
             "user_id": self.user_id,
             "code": self.code
         }
+
