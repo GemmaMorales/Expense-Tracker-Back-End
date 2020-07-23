@@ -28,11 +28,12 @@ def add_endpoints(app):
         code = request.args.get('code')
         user_id = request.args.get('state')
         realmId = request.args.get('realmId')
-        print(f"This are your quickbooks credentials: code: {code} realm: {realmId}")
+        print(f"These are your quickbooks credentials: code: {code} realm: {realmId}")
         user1 = User.query.get(user_id)
         user1.qb_code = code
         user1.qb_realmID = realmId
         db.session.commit()
         return jsonify("Redirecting back to the front end."), 200
     return app
+
 # def save_credentials(quickbooks_code, quickbooks_realmid): ?
