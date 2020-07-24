@@ -29,7 +29,7 @@ class User(db.Model):
 class Client(db.Model):
     client_id = db.Column(db.Integer, primary_key=True, unique=True)
     company_name = db.Column(db.String(200))
-    user_id = db.Column(db.Integer, db.ForeignKey("User.user_id"))
+    user_id = db.Column(db.Integer, db.ForeignKey(User.user_id))
     email = db.Column(db.String(200), unique=True)
 
     transactions = db.relationship ("Transaction")
