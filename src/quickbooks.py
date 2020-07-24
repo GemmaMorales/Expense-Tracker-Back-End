@@ -33,7 +33,7 @@ def add_endpoints(app):
         user1.qb_code = code
         user1.qb_realmID = realmId
         db.session.commit()
-        return jsonify("Redirecting back to the front end."), 200
+        return jsonify("Redirecting to private view."), 200
     return app
 
 # def save_credentials(quickbooks_code, quickbooks_realmid): ?
