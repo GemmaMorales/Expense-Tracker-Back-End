@@ -157,7 +157,7 @@ def decode_response():
     for key, value in body.items():
         transaction = Transaction.query.get(key)
         transaction.transaction_description = value  
-        print(transactions.serialize())
+        print("POWW!!!", transaction.serialize())
         client_id=transaction.client_id
     db.session.commit()
     client = Client.query.get(client_id)
