@@ -6,7 +6,7 @@ from flask import Flask, request, jsonify, url_for, redirect, render_template
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from flask_cors import CORS
-from utils import APIException, generate_sitemap
+from utils import APIException, generate_sitemap, send_simple_email
 from admin import setup_admin
 from models import db
 from models import User, Client, Transaction, Special_Codes
