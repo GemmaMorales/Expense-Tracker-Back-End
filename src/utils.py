@@ -37,11 +37,11 @@ def generate_sitemap(app):
         <img src='https://ucarecdn.com/3a0e7d8b-25f3-4e2f-add2-016064b04075/rigobaby.jpg' />
         <h1>Hello Rigo!!</h1>
         This is your api home, remember to specify a real endpoint path like: <ul style="text-align: left;">"""+links_html+"</ul></div>"
-def send_simple_message():
+def send_simple_message(to, subject, text):
     return requests.post(
-        "https://api.mailgun.net/v3/YOUR_DOMAIN_NAME/messages",
+        "https://api.mailgun.net/v3/"+ os.environ.get('MAILGUN_DOMAIN', ' ') +"/messages",
         auth=("api", os.environ.get('MAILGUN_API_KEY', ' ')),
-        data={"from": "Excited User <mailgun@YOUR_DOMAIN_NAME>",
-              "to": ["bar@example.com", "YOU@YOUR_DOMAIN_NAME"],
-              "subject": "Hello",
-              "text": "Testing some Mailgun awesomness!"})
+        data={"from": "Excited User <mailgun@"+ os.environ.get('MAILGUN_DOMAIN', ' ') +">",
+              "to": [to,],
+              "subject": subject,
+              "text": text})

@@ -153,10 +153,14 @@ def decode_response():
     if request.is_json == False:
         raise APIException('The request must be in json format', status_code=400)
     body = request.get_json()
+    client_id=None
     for key, value in body.items():
         transaction = Transaction.query.get(key)
         transaction.transaction_description = value  
+        client_id=transaction.client_id
     db.session.commit()
+    client = Client.query.get(client_id)
+    send_simple_message(client.email, "Please provide missing details to the transactions listed", "Please provide missing details to the transactions listed below:")
     return "okay", 200 
 
       
