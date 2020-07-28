@@ -162,7 +162,7 @@ def decode_response():
       
 #DECODE OBJECT RESPONSE FOR VENDOR/CUSTOMER NAME
 @app.route('/transactions/payees_or_payers', methods=['PUT'])
-def decode_response():
+def decode_transaction_descriptions_response():
     if request.is_json == False:
         raise APIException('The request must be in json format', status_code=400)
     body = request.get_json()
