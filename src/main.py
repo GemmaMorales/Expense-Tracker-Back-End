@@ -6,7 +6,7 @@ from flask import Flask, request, jsonify, url_for, redirect, render_template
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from flask_cors import CORS
-from utils import APIException, generate_sitemap
+from utils import APIException, generate_sitemap, send_simple_message
 from admin import setup_admin
 from models import db
 from models import User, Client, Transaction, Special_Codes
@@ -102,8 +102,7 @@ def select_client_transactions(client_id):
     vendor_qb_id = request.args.get('vendor_qb_id')
     customer_qb_id = request.args.get('customer_qb_id')
     GL_acct = request.args.get('GL_acct')
-    transaction_description = request.args.get('transaction_description')
-    payee_or_payer = request.args.get('payee_or_payer')
+   
     transactions = Transaction.query.filter_by(client_id=client_id)   
     if vendor_qb_id is not None:
         transactions = transactions.filter_by(vendor_qb_id=vendor_qb_id)
@@ -111,10 +110,6 @@ def select_client_transactions(client_id):
         transactions = transactions.filter_by(customer_qb_id=customer_qb_id)
     if GL_acct is not None:
         transactions = transactions.filter_by(GL_acct=GL_acct)
-    if transaction_description is not None:
-        transactions = transactions.filter_by(transaction_description=transaction_description)
-    if payee_or_payer is not None:
-        transactions = transactions.filter_by(payee_or_payer=payee_or_payer)
     serialized_transactions = list(map(lambda x: x.serialize(), transactions))
     return jsonify(serialized_transactions), 200
 
@@ -159,16 +154,23 @@ def decode_response():
     if request.is_json == False:
         raise APIException('The request must be in json format', status_code=400)
     body = request.get_json()
+    client_id=None
+    print(body)
     for key, value in body.items():
         transaction = Transaction.query.get(key)
         transaction.transaction_description = value  
+        print("POWW!!!", transaction.serialize())
+        client_id=transaction.client_id
     db.session.commit()
+    if client_id is not None:        
+        client = Client.query.get(client_id)
+        send_simple_message(client.email, "Please provide missing details to the transactions listed", "Dear client, <br> Below you will find a list of transactions missing information. Please enter the requested details in the fields indicated. <br> Thank you!")
     return "okay", 200 
 
       
 #DECODE OBJECT RESPONSE FOR VENDOR/CUSTOMER NAME
 @app.route('/transactions/payees_or_payers', methods=['PUT'])
-def decode_payee_payer():
+def decode_transaction_descriptions_response():
     if request.is_json == False:
         raise APIException('The request must be in json format', status_code=400)
     body = request.get_json()
