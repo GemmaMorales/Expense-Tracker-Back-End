@@ -102,6 +102,8 @@ def select_client_transactions(client_id):
     vendor_qb_id = request.args.get('vendor_qb_id')
     customer_qb_id = request.args.get('customer_qb_id')
     GL_acct = request.args.get('GL_acct')
+    transaction_description = request.args.get('transaction_description')
+    payee_or_payer = request.args.get('payee_or_payer')
     transactions = Transaction.query.filter_by(client_id=client_id)   
     if vendor_qb_id is not None:
         transactions = transactions.filter_by(vendor_qb_id=vendor_qb_id)
@@ -109,6 +111,10 @@ def select_client_transactions(client_id):
         transactions = transactions.filter_by(customer_qb_id=customer_qb_id)
     if GL_acct is not None:
         transactions = transactions.filter_by(GL_acct=GL_acct)
+    if transaction_description is not None:
+        transactions = transactions.filter_by(transaction_description=transaction_description)
+    if payee_or_payer is not None:
+        transactions = transactions.filter_by(payee_or_payer=payee_or_payer)
     serialized_transactions = list(map(lambda x: x.serialize(), transactions))
     return jsonify(serialized_transactions), 200
 
