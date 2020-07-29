@@ -1,4 +1,5 @@
 from flask import jsonify, url_for
+import os
 
 class APIException(Exception):
     status_code = 400
@@ -37,3 +38,12 @@ def generate_sitemap(app):
         <img src='https://ucarecdn.com/3a0e7d8b-25f3-4e2f-add2-016064b04075/rigobaby.jpg' />
         <h1>Hello Rigo!!</h1>
         This is your api home, remember to specify a real endpoint path like: <ul style="text-align: left;">"""+links_html+"</ul></div>"
+
+def send_simple_message(to, subject, text):
+    return requests.post(
+        "https://api.mailgun.net/v3/YOUR_DOMAIN_NAME/messages",
+        auth=("api", os.environ.get("MAILGUN_KEY")),
+        data={"from": "",
+              "to": [to],
+              "subject": subject,
+              "text": text})
