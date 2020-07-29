@@ -163,7 +163,7 @@ def decode_response():
     db.session.commit()
     if client_id is not None:        
         client = Client.query.get(client_id)
-        send_simple_message(client.email, "Please provide missing details to the transactions listed", "Please provide missing details to the transactions listed below:")
+        send_simple_message(client.email, "Please provide missing details to the transactions listed", "Dear client, <br> Below you will find a list of transactions missing information. Please enter the requested details in the fields indicated. <br> Thank you!")
     return "okay", 200 
 
       
