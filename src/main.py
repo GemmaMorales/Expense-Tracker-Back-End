@@ -83,16 +83,7 @@ def login():
 # GENERATE CLIENT LIST
 @app.route('/clients', methods=['GET'])
 def get_clients():
-    # vendor_qb_id = request.args.get('vendor_qb_id')
-    # customer_qb_id = request.args.get('customer_qb_id')
-    # GL_acct = request.args.get('GL_acct')
     clients = Client.query.all() 
-    # if vendor_qb_id is not None:
-    #     transactions = transactions.filter_by(vendor_qb_id=vendor_qb_id)
-    # if customer_qb_id is not None:
-    #     transactions = transactions.filter_by(customer_qb_id=customer_qb_id)
-    # if GL_acct is not None:
-    #     transactions = transactions.filter_by(GL_acct=GL_acct)
     serialized_clients = list(map(lambda x: x.serialize(), clients))
     return jsonify(serialized_clients), 200
 
@@ -102,7 +93,6 @@ def select_client_transactions(client_id):
     vendor_qb_id = request.args.get('vendor_qb_id')
     customer_qb_id = request.args.get('customer_qb_id')
     GL_acct = request.args.get('GL_acct')
-   
     transactions = Transaction.query.filter_by(client_id=client_id)   
     if vendor_qb_id is not None:
         transactions = transactions.filter_by(vendor_qb_id=vendor_qb_id)
@@ -144,7 +134,6 @@ def update_transaction(transaction_id):
     if "GL_acct" in request.json: 
         transaction.GL_acct = request.json["GL_acct"]
     db.session.commit()
-
     return jsonify(transaction.serialize()), 200
 
 
