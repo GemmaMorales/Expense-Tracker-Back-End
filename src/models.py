@@ -12,6 +12,7 @@ class User(db.Model):
     password = db.Column(db.String(60))
     qb_code = db.Column(db.String(255), unique=True)
     qb_realmID = db.Column(db.String(255)) 
+    qb_token = db.Column(db.String(800))
     
     
     client = db.relationship ("Client")
