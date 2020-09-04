@@ -168,6 +168,14 @@ def decode_transaction_descriptions_response():
         payee_or_payer = value  
     db.session.commit()
     return "okay", 200  
+
+      
+#DECODE OBJECT RESPONSE FOR VENDOR/CUSTOMER NAME
+@app.route('/me/companies', methods=['GET'])
+@jwt_required
+def get_company():
+    # get company
+    return "okay", 200  
     
 
 # this only runs if `$ python src/main.py` is executed

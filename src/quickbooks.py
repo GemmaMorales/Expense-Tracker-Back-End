@@ -56,21 +56,20 @@ def add_endpoints(app):
 # def save_credentials(quickbooks_code, quickbooks_realmid): ?
 
 
+class QuickBooks():
+    def __init__(token, realm_id):
+        self.token = token
+        self.realm_id = realm_id
+        self.base_url = 'https://sandbox-quickbooks.api.intuit.com'
 
+    def get_company_info():
+        url = f'{self.base_url}/v3/company/{self.realm_id}/companyinfo/{self.realm_id}'
+        auth_header = 'Bearer {0}'.format(self.token)
+        headers = {
+            'Authorization': auth_header,
+            'Accept': 'application/json'
+        }
+        response = requests.get(url, headers=headers)
+        payload = response.json()
 
-def old_token(user):
-    token = (os.environ.get('QB_ID') + ":" + os.environ.get('QB_SECRET')).encode("utf-8")
-    headers = { "Authorization": "Basic " + str(base64.b64encode(token),"utf-8") }
-    params = { 
-        "grant_type":"authorization_code", 
-        "code":user.qb_code,  
-        "redirect_uri": os.environ.get('QB_REDIRECTURL'),  
-    }
-    print("Auth", os.environ.get('QB_ID') + ":" + os.environ.get('QB_SECRET'))
-    print("Params", params)
-    print("Headers", headers)
-    print("URL", url)
-    response = requests.post(url, params=params, headers=headers)
-    payload = response.json()
-    if 'error' in payload:
-        raise APIException(payload["error"], 500)
+        return payload
